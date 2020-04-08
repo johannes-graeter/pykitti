@@ -81,6 +81,15 @@ class odometry:
         return utils.load_image(self.cam3_files[idx], mode='RGB')
 
     @property
+    def semantics(self):
+        """Generator to read image files for cam0 (RGB right)."""
+        return utils.yield_images(self.semantics_files, mode='L')
+
+    def get_semantics(self, idx):
+        """Read image file for cam3 (RGB right) at the specified index."""
+        return utils.load_image(self.semantics_files[idx], mode='L')
+
+    @property
     def gray(self):
         """Generator to read monochrome stereo pairs from file.
         """
@@ -125,6 +134,9 @@ class odometry:
         self.cam3_files = sorted(glob.glob(
             os.path.join(self.sequence_path, 'image_3',
                          '*.{}'.format(self.imtype))))
+        self.semantics_files = sorted(glob.glob(
+            os.path.join(self.sequence_path, 'semantics',
+                         '*.{}'.format(self.imtype))))
         self.velo_files = sorted(glob.glob(
             os.path.join(self.sequence_path, 'velodyne',
                          '*.bin')))
@@ -139,6 +151,8 @@ class odometry:
                 self.cam2_files, self.frames)
             self.cam3_files = utils.subselect_files(
                 self.cam3_files, self.frames)
+            self.semantics_files = utils.subselect_files(
+                self.semantics_files, self.frames)
             self.velo_files = utils.subselect_files(
                 self.velo_files, self.frames)
 
